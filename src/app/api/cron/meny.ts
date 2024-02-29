@@ -23,14 +23,14 @@ export async function fetchMeny() {
     "https://platform-rest-prod.ngdata.no/api/products/1300/7080001150488?page=1&page_size=2000&full_response=true&fieldset=maximal&facets=Category%2CAllergen&facet=Categories%3ADrikke&showNotForSale=true"
   ).then((res) => res.json());
 
-  const validaitonResult = apiResponseSchema.safeParse(data);
+  const validationResult = apiResponseSchema.safeParse(data);
 
-  if (validaitonResult.success === false) {
-    console.log("Failed to validate Meny response", validaitonResult.error);
+  if (validationResult.success === false) {
+    console.log("Failed to validate Meny response", validationResult.error);
     return [];
   }
 
-  for (const hit of validaitonResult.data.hits.hits) {
+  for (const hit of validationResult.data.hits.hits) {
     const productValidationResult = productSchema.safeParse(hit);
 
     if (productValidationResult.success === false) {
