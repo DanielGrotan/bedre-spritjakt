@@ -6,13 +6,24 @@ import {
   timestamp,
 } from "drizzle-orm/pg-core";
 
-export const products = pgTable("products", {
-  id: text("id").notNull().primaryKey(),
-  abv: doublePrecision("abv").notNull(),
-  volume: doublePrecision("volume").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
+export const products = pgTable(
+  "products",
+  {
+    id: text("id").notNull().primaryKey(),
+    name: text("name").notNull(),
+    description: text("description").notNull(),
+    abv: doublePrecision("abv").notNull(),
+    volume: doublePrecision("volume").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at").defaultNow(),
+  },
+  (table) => ({
+    nameIdx: index("name_idx").on(table.name),
+    descriptionIdx: index("description_idx").on(table.description),
+    abvIdx: index("abv_idx").on(table.abv),
+    volumeIdx: index("volume_idx").on(table.volume),
+  })
+);
 
 export const prices = pgTable(
   "prices",
