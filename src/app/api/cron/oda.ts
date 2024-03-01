@@ -14,11 +14,14 @@ const apiResponseSchema = z.object({
 const productSchema = z.object({
   type: z.literal("product"),
   attributes: z.object({
-    id: z.number(),
+    id: z.number().transform((value) => value.toString()),
   }),
 });
 
 const detailedProductSchema = z.object({
+  gross_price: z.string().transform((value) => parseFloat(value)),
+  gross_unit_price: z.string().transform((value) => parseFloat(value)),
+  unit_price_quantity_abbreviation: z.literal("l"),
   detailed_info: z.object({
     local: z.array(
       z.object({
@@ -76,7 +79,7 @@ export async function fetchOda() {
   return results;
 }
 
-async function fetchProduct(productId: number) {
+async function fetchProduct(productId: string) {
   const data = await fetch(
     `https://oda.com/tienda-web-api/v1/products/${productId}/`
   ).then((res) => res.json());
@@ -124,10 +127,23 @@ async function fetchProduct(productId: number) {
     }
 
     if (product.size && product.abv) {
+      const productData = detailedProductValidationResult.data;
+
+      const volume =
+        Math.round(
+          (productData.gross_price / productData.gross_unit_price) * 1000
+        ) / 1000;
+
+      const alcoholVolume = volume * (product.abv / 100);
+      const alcoholUnitPrice = productData.gross_price / alcoholVolume;
+
       return {
+        productId,
         source: "oda",
-        size: product.size,
         abv: product.abv,
+        volume,
+        price: productData.gross_price,
+        alcoholUnitPrice,
       };
     }
   }
