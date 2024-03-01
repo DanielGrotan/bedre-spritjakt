@@ -1,3 +1,4 @@
+import { relations } from "drizzle-orm";
 import {
   doublePrecision,
   index,
@@ -14,8 +15,9 @@ export const products = pgTable(
     description: text("description").notNull(),
     abv: doublePrecision("abv").notNull(),
     volume: doublePrecision("volume").notNull(),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at").defaultNow(),
+    imageUrl: text("image_url"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
   },
   (table) => ({
     nameIdx: index("name_idx").on(table.name),
@@ -24,6 +26,10 @@ export const products = pgTable(
     volumeIdx: index("volume_idx").on(table.volume),
   })
 );
+
+export const productsRelations = relations(products, ({ many }) => ({
+  prices: many(prices),
+}));
 
 export const prices = pgTable(
   "prices",
@@ -34,7 +40,7 @@ export const prices = pgTable(
     store: text("store").notNull(),
     price: doublePrecision("price").notNull(),
     alcoholUnitPrice: doublePrecision("alcohol_unit_price").notNull(),
-    timestamp: timestamp("timestamp").defaultNow(),
+    timestamp: timestamp("timestamp").defaultNow().notNull(),
   },
   (table) => ({
     productIdIdx: index("product_id_idx").on(table.productId),
@@ -46,3 +52,10 @@ export const prices = pgTable(
     timestampIdx: index("timestamp_idx").on(table.timestamp),
   })
 );
+
+export const pricesRelations = relations(prices, ({ one }) => ({
+  product: one(products, {
+    fields: [prices.productId],
+    references: [products.id],
+  }),
+}));

@@ -23,6 +23,7 @@ const detailedProductSchema = z.object({
   gross_price: z.string().transform((value) => parseFloat(value)),
   gross_unit_price: z.string().transform((value) => parseFloat(value)),
   unit_price_quantity_abbreviation: z.literal("l"),
+  images: z.array(z.unknown()),
   detailed_info: z.object({
     local: z.array(
       z.object({
@@ -38,6 +39,12 @@ const detailedProductSchema = z.object({
         }),
       })
     ),
+  }),
+});
+
+const imageSchema = z.object({
+  large: z.object({
+    url: z.string(),
   }),
 });
 
@@ -96,6 +103,17 @@ async function fetchProduct(productId: string) {
 
   if (detailedProductValidationResult.success === false) {
     return;
+  }
+
+  let imageUrl;
+
+  for (const image of detailedProductValidationResult.data.images) {
+    const imageValidationResult = imageSchema.safeParse(image);
+
+    if (imageValidationResult.success) {
+      imageUrl = imageValidationResult.data.large.url;
+      break;
+    }
   }
 
   for (const {
@@ -157,6 +175,7 @@ async function fetchProduct(productId: string) {
         volume,
         price: productData.gross_price,
         alcoholUnitPrice,
+        imageUrl,
       };
     }
   }

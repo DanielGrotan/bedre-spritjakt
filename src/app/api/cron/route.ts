@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
     description: product.description,
     abv: product.abv,
     volume: product.volume,
+    imageUrl: product.imageUrl,
   }));
 
   await db.transaction(async (trx) => {
@@ -42,6 +43,7 @@ export async function GET(request: NextRequest) {
           description: sql`EXCLUDED.description`,
           abv: sql`EXCLUDED.abv`,
           volume: sql`EXCLUDED.volume`,
+          imageUrl: sql`EXCLUDED.image_url`,
           updatedAt: sql`NOW()`,
         },
       });

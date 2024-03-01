@@ -67,6 +67,7 @@ export async function fetchMeny() {
       volume,
       price,
       alcoholUnitPrice,
+      imageUrl: `https://bilder.ngdata.no/${source.ean}/meny/medium.jpg`,
     });
   }
 
