@@ -1,5 +1,8 @@
+import { db } from "@/server/db";
+import { products } from "@/server/db/schema";
 import { NextRequest } from "next/server";
 import { fetchMeny } from "./meny";
+import { fetchOda } from "./oda";
 
 export async function GET(request: NextRequest) {
   const authHeader = request.headers.get("authorization");
@@ -8,7 +11,9 @@ export async function GET(request: NextRequest) {
   }
 
   const menyProducts = await fetchMeny();
-  // const odaProducts = await fetchOda();
+  const odaProducts = await fetchOda();
 
-  return Response.json({ menyProducts });
+  await db.insert(products).values(menyProducts.concat(odaProducts));
+
+  return Response.json({ success: true });
 }

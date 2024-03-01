@@ -54,8 +54,8 @@ export async function fetchMeny() {
     const alcoholUnitPrice = price / alcoholVolume;
 
     products.push({
-      productId: source.ean,
-      source: "meny",
+      externalId: source.ean,
+      store: "meny",
       abv,
       volume,
       price,

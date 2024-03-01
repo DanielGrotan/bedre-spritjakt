@@ -138,8 +138,8 @@ async function fetchProduct(productId: string) {
       const alcoholUnitPrice = productData.gross_price / alcoholVolume;
 
       return {
-        productId,
-        source: "oda",
+        externalId: productId,
+        store: "oda",
         abv: product.abv,
         volume,
         price: productData.gross_price,
