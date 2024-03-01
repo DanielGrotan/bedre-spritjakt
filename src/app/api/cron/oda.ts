@@ -48,7 +48,10 @@ export async function fetchOda() {
     console.log(`Fetching Oda section id ${sectionId}`);
 
     const data = await fetch(
-      `https://oda.com/tienda-web-api/v1/section-listing/categories/${sectionId}/${sectionId}/`
+      `https://oda.com/tienda-web-api/v1/section-listing/categories/${sectionId}/${sectionId}/`,
+      {
+        cache: "no-store",
+      }
     ).then((res) => res.json());
 
     const validationResult = apiResponseSchema.safeParse(data);
@@ -83,7 +86,10 @@ export async function fetchOda() {
 
 async function fetchProduct(productId: string) {
   const data = await fetch(
-    `https://oda.com/tienda-web-api/v1/products/${productId}/`
+    `https://oda.com/tienda-web-api/v1/products/${productId}/`,
+    {
+      cache: "no-store",
+    }
   ).then((res) => res.json());
 
   const detailedProductValidationResult = detailedProductSchema.safeParse(data);

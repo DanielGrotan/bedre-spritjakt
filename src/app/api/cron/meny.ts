@@ -22,7 +22,10 @@ export async function fetchMeny() {
   const products = [];
 
   const data = await fetch(
-    "https://platform-rest-prod.ngdata.no/api/products/1300/7080001150488?page=1&page_size=2000&full_response=true&fieldset=maximal&facets=Category%2CAllergen&facet=Categories%3ADrikke&showNotForSale=true"
+    "https://platform-rest-prod.ngdata.no/api/products/1300/7080001150488?page=1&page_size=2000&full_response=true&fieldset=maximal&facets=Category%2CAllergen&facet=Categories%3ADrikke&showNotForSale=true",
+    {
+      cache: "no-store",
+    }
   ).then((res) => res.json());
 
   const validationResult = apiResponseSchema.safeParse(data);
