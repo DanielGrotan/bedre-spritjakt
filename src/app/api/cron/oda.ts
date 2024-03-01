@@ -19,6 +19,7 @@ const productSchema = z.object({
 });
 
 const detailedProductSchema = z.object({
+  name: z.string(),
   gross_price: z.string().transform((value) => parseFloat(value)),
   gross_unit_price: z.string().transform((value) => parseFloat(value)),
   unit_price_quantity_abbreviation: z.literal("l"),
@@ -26,6 +27,7 @@ const detailedProductSchema = z.object({
     local: z.array(
       z.object({
         language: z.string(),
+        description_from_supplier: z.string(),
         contents_table: z.object({
           rows: z.array(
             z.object({
@@ -90,8 +92,11 @@ async function fetchProduct(productId: string) {
     return;
   }
 
-  for (const { language, contents_table } of detailedProductValidationResult
-    .data.detailed_info.local) {
+  for (const {
+    language,
+    description_from_supplier,
+    contents_table,
+  } of detailedProductValidationResult.data.detailed_info.local) {
     if (language !== "nb") {
       continue;
     }
@@ -139,6 +144,8 @@ async function fetchProduct(productId: string) {
 
       return {
         externalId: productId,
+        name: productData.name,
+        description: description_from_supplier,
         store: "oda",
         abv: product.abv,
         volume,

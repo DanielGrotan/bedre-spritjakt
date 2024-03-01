@@ -8,6 +8,8 @@ const apiResponseSchema = z.object({
 
 const productSchema = z.object({
   _source: z.object({
+    description: z.string(),
+    title: z.string(),
     alcoholPercentage: z.number(),
     pricePerUnit: z.number(),
     comparePricePerUnit: z.number(),
@@ -55,6 +57,8 @@ export async function fetchMeny() {
 
     products.push({
       externalId: source.ean,
+      name: source.title,
+      description: source.description,
       store: "meny",
       abv,
       volume,

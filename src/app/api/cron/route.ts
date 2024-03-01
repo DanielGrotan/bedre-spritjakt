@@ -39,6 +39,7 @@ export async function GET(request: NextRequest) {
         set: {
           abv: sql`EXCLUDED.abv`,
           volume: sql`EXCLUDED.volume`,
+          updatedAt: sql`NOW()`,
         },
       });
   });
