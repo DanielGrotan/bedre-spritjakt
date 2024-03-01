@@ -1,23 +1,11 @@
-import {
-  pgTable,
-  serial,
-  text,
-  timestamp,
-  uniqueIndex,
-} from "drizzle-orm/pg-core";
+import { decimal, pgTable, serial, text } from "drizzle-orm/pg-core";
 
-export const ExampleTable = pgTable(
-  "users",
-  {
-    id: serial("id").primaryKey(),
-    name: text("name").notNull(),
-    email: text("email").notNull(),
-    image: text("image").notNull(),
-    createdAt: timestamp("createdAt").defaultNow().notNull(),
-  },
-  (users) => {
-    return {
-      uniqueIdx: uniqueIndex("unique_idx").on(users.email),
-    };
-  }
-);
+export const ProductsTable = pgTable("products", {
+  id: serial("id").primaryKey(),
+  externalId: text("external_id").notNull(),
+  store: text("store").notNull(),
+  abv: decimal("abv").notNull(),
+  volume: decimal("volume").notNull(),
+  price: decimal("price").notNull(),
+  alocoholUnitPrice: decimal("alcohol_unit_price").notNull(),
+});
