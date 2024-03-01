@@ -25,23 +25,27 @@ export async function GET(request: NextRequest) {
 
   const productsData = allProducts.map((product) => ({
     id: product.externalId,
+    name: product.name,
+    description: product.description,
     abv: product.abv,
     volume: product.volume,
   }));
 
   await db.transaction(async (trx) => {
-    await trx.insert(prices).values(pricesData);
     await trx
       .insert(products)
       .values(productsData)
       .onConflictDoUpdate({
         target: products.id,
         set: {
+          name: sql`EXCLUDED.name`,
+          description: sql`EXCLUDED.description`,
           abv: sql`EXCLUDED.abv`,
           volume: sql`EXCLUDED.volume`,
           updatedAt: sql`NOW()`,
         },
       });
+    await trx.insert(prices).values(pricesData);
   });
 
   return Response.json({ success: true });
